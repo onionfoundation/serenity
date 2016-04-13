@@ -14,6 +14,9 @@
                  [io.pedestal/pedestal.service "0.4.1"]
                  [io.pedestal/pedestal.jetty "0.4.1"]
                  [enlive "1.1.6"]
+                 [environ "1.0.0"] ;; Config and Environment variable override
+                 [geheimtur "0.3.0"] ;; Auth & Auth
+                 [ns-tracker "0.3.0"] ;; Auto-reload server side on edits (without reval in REPL)
 
                  ;; Client-side
                  [org.clojure/clojurescript "1.8.40"]
@@ -29,24 +32,26 @@
 
                  ;; Deps cleanup
                  [org.clojure/tools.reader "1.0.0-alpha3"]
-                 [commons-codec "1.10"]]
+                 [org.clojure/java.classpath "0.2.3"]
+                 [commons-codec "1.10"]
+                 [com.fasterxml.jackson.core/jackson-core "2.5.3"]]
   :min-lein-version "2.6.1"
   :resource-paths ["config" "resources"]
   ;:java-source-paths ["java"]
   ;:javac-options ["-target" "1.8" "-source" "1.8"]
-  :global-vars  {*warn-on-reflection* true
-                 *unchecked-math* :warn-on-boxed
+  :global-vars  {;*warn-on-reflection* true
+                 ;*unchecked-math* :warn-on-boxed
                  *assert* true}
   :pedantic? :abort
   :aliases {"build" ["uberjar"]}
-  :profiles {:uberjar {:aot [serenity.server]}
-             :prod {:aot [serenity.server]}
+  :profiles {:uberjar {:aot [serenity.service]}
+             :prod {:aot [serenity.service]}
              :srepl {:jvm-opts ^:replace ["-d64" "-server"
                                           "-XX:+UseG1GC"
                                           "-Dclojure.server.repl={:port 5555 :accept clojure.core.server/repl}"]}
              :dev {:aliases {"dumbrepl" ["trampoline" "run" "-m" "clojure.main/main"]
                              "srepl" ["with-profile" "srepl" "trampoline" "run" "-m" "clojure.main/main"]
-                             "run-dev" ["trampoline" "run" "-m" "serenity.server/run-dev"]
+                             "run-dev" ["trampoline" "run" "-m" "serenity.service/run-dev"]
                              "build-all" ["do" "clean," "check," "cljsbuild" "once"]
                              "test-all" ["do" "clean," "test," "cljsbuild" "test,"] }
                    :dependencies [[criterium "0.4.4"]
@@ -63,7 +68,7 @@
                              [lein-codox "0.9.0" :exclusions [[org.clojure/clojure]]]
                              ;; Requires lein 2.5.0 or higher
                              [lein-cljfmt "0.3.0" :exclusions [[org.clojure/clojure]]]]}}
-  :main ^{:skip-aot true} serenity.server
+  :main ^{:skip-aot true} serenity.service
   :jvm-opts ^:replace ["-d64" "-server"
                          ;"-Xms1g" ;"-Xmx1g"
                          ;"-XX:+UnlockCommercialFeatures" ;"-XX:+FlightRecorder"

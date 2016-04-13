@@ -1,56 +1,78 @@
 (ns serenity.service
-  (:require [clojure.java.io :as io]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.route :as route]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.route.definition :refer [defroutes]]
-            [ring.util.response :as ring-resp]))
+  (:require [io.pedestal.http :as http]
+            [ns-tracker.core :refer [ns-tracker]]
+            [serenity.routes :refer [routes]]
+            [serenity.db :as db]
+            [serenity.bootstrap :refer [conf]])
+  (:gen-class))
 
-(defn home-page
-  [request]
-  (ring-resp/response "Hello Fritz"))
 
-(defn new-page
-  [request]
-  (ring-resp/response "New page"))
+(defonce modified-namespaces
+  (if (conf :prod)
+    (constantly nil)
+    (ns-tracker ["src"])))
 
-(def app-resp (slurp (io/resource "public/index.html")))
-(defn app-page
-  [request]
-  (ring-resp/response app-resp))
+(def service
+  {::http/host (conf :host "127.0.0.1")
+   ::http/port (Integer/parseInt (conf :port "8080"))
+   ::http/type :jetty
+   ::http/join? false
+   ::http/resource-path "/public"
+   ::http/routes (if (conf :prod)
+                   routes
+                   (fn []
+                     (doseq [ns-sym (modified-namespaces)]
+                       (require ns-sym :reload))
+                     (deref #'routes)))})
 
-(defroutes routes
-  ;; Defines "/" and "/about" routes with their associated :get handlers.
-  ;; The interceptors defined after the verb map (e.g., {:get home-page}
-  ;; apply to / and its children (/about).
-  [[["/" {:get home-page}
-     ^:interceptors [(body-params/body-params) http/html-body]
-     ["/app" {:get app-page}]
-     ["/new" {:get new-page}]]]])
+(defn server [service-overrides]
+  (http/create-server (merge service
+                             service-overrides)))
 
-;; Consumed by serenity.server/create-server
-;; See http/default-interceptors for additional options you can configure
-(def service {:env :prod
-              ;; You can bring your own non-default interceptors. Make
-              ;; sure you include routing and set it up right for
-              ;; dev-mode. If you do, many other keys for configuring
-              ;; default interceptors will be ignored.
-              ;; ::http/interceptors []
-              ::http/routes routes
+(defn start
+  ([service-overrides]
+   (let [server (server service-overrides)
+        datomic-uri (:datomic-uri service-overrides
+                                  (conf :datomic-uri))]
+    (db/bootstrap! datomic-uri)
+    (http/start server)))
+  ([k & vkvs]
+   (start (apply hash-map (cons vkvs k)))))
 
-              ;; Uncomment next line to enable CORS support, add
-              ;; string(s) specifying scheme, host and port for
-              ;; allowed source(s):
-              ;;
-              ;; "http://localhost:8080"
-              ;;
-              ;;::http/allowed-origins ["scheme://host:port"]
+(defn stop [serv]
+  (if serv
+    (http/stop serv)
+    serv))
 
-              ;; Root for resource interceptor that is available by default.
-              ::http/resource-path "/public"
+(defn restart [serv]
+  (if serv
+    (http/start (stop serv))
+    serv))
 
-              ;; Either :jetty, :immutant or :tomcat (see comments in project.clj)
-              ::http/type :jetty
-              ;;::http/host "localhost"
-              ::http/port 8080})
+(defn run-dev
+  "The entry-point for 'lein run-dev'"
+  [& args]
+  (println "\nCreating your [DEV] server...")
+  (-> service ;; start with production configuration
+      (merge {:env :dev
+              ;; do not block thread that starts web server
+              ::http/join? false
+              ;; Routes can be a function that resolve routes,
+              ;;  we can use this to set the routes to be reloadable
+              ::http/routes (fn []
+                              (doseq [ns-sym (modified-namespaces)]
+                                (require ns-sym :reload))
+                              (deref #'routes))
+              ;; all origins are allowed in dev mode
+              ::http/allowed-origins {:creds true :allowed-origins (constantly true)}}
+             (apply hash-map args))
+      ;; Wire up interceptor chains
+      http/default-interceptors
+      http/dev-interceptors
+      server
+      start))
+
+(defn -main [& args]
+  (start ::http/join? true
+         ::http/routes routes))
 
