@@ -1,0 +1,28 @@
+/* line 1, ../../scss/app.scss */
+input.query {
+  width: 100%;
+}
+
+/* line 5, ../../scss/app.scss */
+.dropdown {
+  padding: 0;
+}
+
+/* line 9, ../../scss/app.scss */
+.artifact iframe, .artifact p, .artifact img {
+  margin: 1.5em 0 1.5em 0;
+}
+
+/* line 14, ../../scss/app.scss */
+#table-results th {
+  text-align: center;
+}
+/* line 17, ../../scss/app.scss */
+#table-results td {
+  text-align: center;
+  width: 150px;
+}
+/* line 21, ../../scss/app.scss */
+#table-results td:first-of-type {
+  font-size: 150%;
+}
