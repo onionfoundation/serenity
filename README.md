@@ -30,6 +30,12 @@ To learn more about configuring Logback, read its [documentation](http://logback
  * `lein test` to run the service tests
  * `lein test-all` to run the service and client-side tests
 
+### TODO
+
+ * Pick a server-side validation library (I would recommend `schema`):
+  * [schema](https://github.com/plumatic/schema) - Popular, well-supported, works on CLJS
+  * [Themis](https://github.com/ohpauleez/themis) - Open-ended data structure processing -- can validate anything. Clojure only.
+
 ## Links
 * [Other examples](https://github.com/pedestal/samples)
 
