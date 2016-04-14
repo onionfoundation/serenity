@@ -1,4 +1,6 @@
 # Project related
+resources/public/js
+resources/public/dev
 
 # Java related
 pom.xml

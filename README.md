@@ -22,7 +22,8 @@ To learn more about configuring Logback, read its [documentation](http://logback
 ## Development
 
  * `lein build-all` to compile the entire client side application
- * `lein cljsbuild once prod` to do a single "prod" compile of the application
+ * `lein cljsbuild once prod` to do a single "prod" compile of the client application
+ * `lein cljsbuild auto dev` to do incremental "dev" compilation of the client application
  * `lein repl` and then `(run-dev)` to a have server-dev-repl
  * `lein test` to run the service tests
  * `lein test-all` to run the service and client-side tests
