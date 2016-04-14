@@ -5,11 +5,11 @@
 
 (deftest home-page-test
   (is (=
-       (:body (response-for (helpers/service) :get "/"))
+       (:body (response-for (helpers/service) :get "/status"))
        "Hello, from Serenity!"))
   (is (=
-       (:headers (response-for (helpers/service) :get "/"))
-       {"Content-Type" "text/plain"
+       (:headers (response-for (helpers/service) :get "/status"))
+       {"Content-Type" "text/html;charset=UTF-8"
         "Strict-Transport-Security" "max-age=31536000; includeSubdomains"
         "X-Frame-Options" "DENY"
         "X-Content-Type-Options" "nosniff"
