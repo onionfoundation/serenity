@@ -35,7 +35,7 @@
                  [org.clojure/java.classpath "0.2.3"]
                  [commons-codec "1.10"]
                  [com.fasterxml.jackson.core/jackson-core "2.5.3"]]
-  :min-lein-version "2.6.1"
+  :min-lein-version "2.5.3"
   :resource-paths ["config" "resources"]
   ;:java-source-paths ["java"]
   ;:javac-options ["-target" "1.8" "-source" "1.8"]
