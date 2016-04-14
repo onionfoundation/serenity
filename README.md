@@ -25,6 +25,8 @@ To learn more about configuring Logback, read its [documentation](http://logback
  * `lein cljsbuild once prod` to do a single "prod" compile of the client application
  * `lein cljsbuild auto dev` to do incremental "dev" compilation of the client application
  * `lein repl` and then `(run-dev)` to a have server-dev-repl
+   * Browse to the [dev app page](http://127.0.0.1:8080/dev/index.html)
+   * Or see the [production app](http://127.0.0.1:8080/)
  * `lein test` to run the service tests
  * `lein test-all` to run the service and client-side tests
 
