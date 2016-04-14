@@ -19,6 +19,14 @@ with `lein run`.
 To configure logging see config/logback.xml. By default, the app logs to stdout and logs/.
 To learn more about configuring Logback, read its [documentation](http://logback.qos.ch/documentation.html).
 
+## Development
+
+ * `lein build-all` to compile the entire client side application
+ * `lein cljsbuild once prod` to do a single "prod" compile of the application
+ * `lein repl` and then `(run-dev)` to a have server-dev-repl
+ * `lein test` to run the service tests
+ * `lein test-all` to run the service and client-side tests
+
 ## Links
 * [Other examples](https://github.com/pedestal/samples)
 
