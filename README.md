@@ -1,6 +1,6 @@
 # serenity
 
-FIXME
+Serenity - Online Grant Processing Software
 
 ## Getting Started
 
