@@ -35,6 +35,8 @@ To learn more about configuring Logback, read its [documentation](http://logback
  * Pick a server-side validation library (I would recommend `schema`):
   * [schema](https://github.com/plumatic/schema) - Popular, well-supported, works on CLJS
   * [Themis](https://github.com/ohpauleez/themis) - Open-ended data structure processing -- can validate anything. Clojure only.
+ * Sort sort of dataflow system for the client application (Paul can drop in a standard recipe)
+ * Integrate client side template into the dataflow system
 
 ## Links
 * [Other examples](https://github.com/pedestal/samples)
