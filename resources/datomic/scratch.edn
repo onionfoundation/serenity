@@ -1,0 +1,27 @@
+
+;; Scratch schema in shorthand
+{
+ :user/first-name "String"
+ :user/last-name "String"
+ :user/email :identity "String"
+ :user/org :ref->Org
+ :user/roles [:ref->Role]
+
+ ;; Role Enum
+ :user.role/user
+ :user.role/grantee
+ :user.role/grantor
+ :user.role/grantor.admin
+ :user.role/grantor.review
+
+ :org/name "String"
+ :org/address :ref->Address
+ :org/email "String"
+ :org/ein :identity "String"
+
+ :address/street "String"
+ :address/city "String"
+ :address/state "String"
+ :address/postal "String"
+
+ }

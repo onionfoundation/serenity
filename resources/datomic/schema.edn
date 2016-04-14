@@ -1,8 +1,103 @@
 {:serenity/base-schema
- {:txes [[{:db/id #db/id[:db.part/db]
-           :db/ident :person/name
+ {:txes [[;; User
+          ;; -----------
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user/first-name
            :db/valueType :db.type/string
            :db/cardinality :db.cardinality/one
-           :db/doc "A person's name"
+           :db/doc "A user's first name"
            :db.install/_attribute :db.part/db}
-          ]]}}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user/last-name
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "A user's last name"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user/email
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/unique :db.unique/identity
+           :db/doc "A user's primary email"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user/org
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/one
+           :db/doc "A user's main Organization affiliation"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user/roles
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/many
+           :db/doc "A union of all role enum values for this user"
+           :db.install/_attribute :db.part/db}
+
+          ;; Role Enum
+          ;; --------------------
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user.role/user} ;; A general user
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user.role/grantee} ;; A grantee
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user.role/grantor} ;; A grantor
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user.role/grantor.admin} ;; This grantor can perform admin tasks on applications
+          {:db/id #db/id[:db.part/db]
+           :db/ident :user.role/grantor.review} ;; This grantor can review and comment on applications
+
+          ;; Organization
+          ;; ------------------
+          {:db/id #db/id[:db.part/db]
+           :db/ident :org/name
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The name of the organization"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :org/address
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/one
+           :db/doc "The primary address for an organization"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :org/email
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The primary contact email for the organization"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :org/ein
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/unique :db.unique/identity
+           :db/doc "The organizations EIN"
+           :db.install/_attribute :db.part/db}
+
+          ;; Address
+          ;; ------------------
+          {:db/id #db/id[:db.part/db]
+           :db/ident :address/street
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The address street"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :address/city
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The address city"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :address/state
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The address state"
+           :db.install/_attribute :db.part/db}
+          {:db/id #db/id[:db.part/db]
+           :db/ident :address/postal
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/doc "The address zip/postal code"
+           :db.install/_attribute :db.part/db}]]}}
+
